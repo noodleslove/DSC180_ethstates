@@ -4,7 +4,7 @@ import { Container } from "@chakra-ui/react";
 import Marketplace from "./pages/Marketplace";
 import ListProperty from "./pages/ListProperty";
 import PropertyItem from "./pages/PropertyItem";
-import Investors from "./pages/Investors";
+import Invest from "./pages/Invest";
 import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 import NavBar from "./components/NavBar";
@@ -21,7 +21,7 @@ function App() {
           <Route path="/" element={<Marketplace />} />
           <Route path="/listProperty" element={<ListProperty />} />
           <Route path="/property" element={<PropertyItem />} />
-          <Route path="/investors" element={<Investors />} />
+          <Route path="/invest" element={<Invest />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<NotFound />}/>
         </Routes>

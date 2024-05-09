@@ -20,7 +20,7 @@ interface Props {
 const Links = [
   { name: "Marketplace", href: "/" },
   { name: "List Property", href: "/listProperty" },
-  { name: "Investors", href: "/investors" },
+  { name: "Invest", href: "/invest" },
   { name: "Profile", href: "/profile" },
 ];
 

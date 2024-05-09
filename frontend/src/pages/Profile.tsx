@@ -4,9 +4,16 @@ import {
   AlertIcon,
   AlertTitle,
   Badge,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Container,
   Heading,
+  SimpleGrid,
   Spinner,
+  Text,
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
@@ -18,17 +25,30 @@ import { useGetAllPropertiesByOwner } from "../hooks/marketplace/useProperty";
 
 import { Nft } from "../types/listing";
 import { CHAIN_ID } from "../types/constant";
+import { useGetAllLoansByOwner } from "../hooks/financing/useLoan";
+import { Loan } from "../types/financing";
 
 export default function Profile() {
   const [nfts, setNfts] = useState<Nft[] | undefined>([]);
+  const [loans, setLoans] = useState<Loan[] | undefined>([]);
   const { address, chain, isConnected } = useAccount();
   const { isFetched, data } = useGetAllPropertiesByOwner(address);
+  const { isFetched: isLoansFetched, data: loansData } =
+    useGetAllLoansByOwner(address);
 
   useEffect(() => {
     if (isConnected && isFetched) {
+      console.log("data", data);
       setNfts(data);
     }
   }, [isConnected, isFetched]);
+
+  useEffect(() => {
+    if (isConnected && isLoansFetched) {
+      console.log("loans", loans);
+      setLoans(loansData);
+    }
+  }, [isConnected, isLoansFetched]);
 
   // Wallet not connected
   if (!isConnected) {
@@ -150,6 +170,40 @@ export default function Profile() {
             );
           })}
         </NftCollection>
+      </Container>
+      <Container maxWidth="container.lg">
+        <Heading as="h1" size="xl" mt={8}>
+          Loans Listed{" "}
+          <Badge
+            borderRadius="full"
+            fontSize="x-large"
+            px="2"
+            colorScheme="green"
+          >
+            {loans?.length}
+          </Badge>
+        </Heading>
+
+        <SimpleGrid
+          mt={8}
+          spacing={8}
+          columns={{ base: 1, md: 2, lg: 3 }}
+        >
+          {loans?.map((loan: Loan) => (
+            <Card key={loan.loanId}>
+              <CardHeader>
+                <Heading size="md">Loan {loan.loanId}</Heading>
+              </CardHeader>
+              <CardBody>
+                <Text>Annual Interest Rate: {loan.annualInterestRate}%</Text>
+                <Text>Max Duration (months): {loan.maxDurationInMonths}</Text>
+              </CardBody>
+              <CardFooter>
+                <Button>View here</Button>
+              </CardFooter>
+            </Card>
+          ))}
+        </SimpleGrid>
       </Container>
     </main>
   );

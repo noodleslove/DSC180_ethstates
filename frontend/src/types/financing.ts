@@ -2,18 +2,21 @@ export interface LoanResult {
   0: `0x${string}`; // lender
   1: bigint; // annualInterestRate
   2: bigint; // maxDurationInMonths
+  3: bigint; // loanId
 }
 
 export enum LoanResultIndex {
   LENDER,
   ANNUAL_INTEREST_RATE,
-  MAX_DURATION_IN_MONTHS
+  MAX_DURATION_IN_MONTHS,
+  LOANID,
 }
 
 export interface Loan {
   lender: `0x${string}`;
   annualInterestRate: number;
   maxDurationInMonths: number;
+  loanId: number;
 }
 
 export enum FinancingStatus {
@@ -22,7 +25,7 @@ export enum FinancingStatus {
   Rejected,
   Active,
   Default,
-  PaidOff
+  PaidOff,
 }
 
 export interface FinancingResult {
@@ -42,7 +45,7 @@ export enum FinancingResultIndex {
   STATUS,
   LOAN_AMOUNT,
   DURATION_IN_MONTHS,
-  PAID_MONTHS
+  PAID_MONTHS,
 }
 
 export interface Financing {
