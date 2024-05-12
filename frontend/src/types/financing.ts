@@ -29,16 +29,18 @@ export enum FinancingStatus {
 }
 
 export interface FinancingResult {
-  0: bigint; // propertyId
-  1: string; // loaner
-  2: bigint; // loanId
-  3: FinancingStatus; // status
-  4: bigint; // loanAmount
-  5: bigint; // durationInMonths
-  6: bigint; // paidMonths
+  0: bigint; // financingId
+  1: bigint; // propertyId
+  2: string; // loaner
+  3: bigint; // loanId
+  4: FinancingStatus; // status
+  5: bigint; // loanAmount
+  6: bigint; // durationInMonths
+  7: bigint; // paidMonths
 }
 
 export enum FinancingResultIndex {
+  FINANCING_ID,
   PROPERTY_ID,
   LOANER,
   LOAN_ID,
@@ -49,6 +51,7 @@ export enum FinancingResultIndex {
 }
 
 export interface Financing {
+  financingId: number;
   propertyId: number;
   loaner: string;
   loanId: number;
