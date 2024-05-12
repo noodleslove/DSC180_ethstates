@@ -184,6 +184,9 @@ export function useParticularProperty(
         );
         const financingData: Financing = {
           loanId: Number(currentFinancing[FinancingResultIndex.LOAN_ID]),
+          financingId: Number(
+            currentFinancing[FinancingResultIndex.FINANCING_ID]
+          ),
           propertyId: Number(
             currentFinancing[FinancingResultIndex.PROPERTY_ID]
           ),

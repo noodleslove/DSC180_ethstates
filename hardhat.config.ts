@@ -19,18 +19,23 @@ const config: HardhatUserConfig = {
   },
   defaultNetwork: "localhost",
   networks: {
-    polygon: {
-      url: process.env.ALCHEMY_POLYGON_URL,
-      accounts: [process.env.PRIVATE_KEY!],
-    },
-    polygonAmony: {
+    polygonAmoy: {
       url: process.env.ALCHEMY_AMONY_URL,
       accounts: [process.env.PRIVATE_KEY!],
     },
   },
   etherscan: {
     apiKey: process.env.POLYGONSCAN_KEY,
-
+    customChains: [
+      {
+        network: "polygonAmoy",
+        chainId: 80002,
+        urls: {
+          apiURL: "https://api-amoy.polygonscan.com/api",
+          browserURL: "https://amoy.polygonscan.com/"
+        },
+      },
+    ],
   },
 };
 

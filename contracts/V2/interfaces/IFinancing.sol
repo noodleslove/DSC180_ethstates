@@ -85,4 +85,6 @@ interface IFinancing {
     ) external view returns (Financing memory);
 
     function setFinancingId(uint256 _propertyId, uint256 _financingId) external;
+
+    function lenderGetFinancings() external view returns (Financing[] memory);
 }

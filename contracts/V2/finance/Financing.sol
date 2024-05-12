@@ -22,6 +22,7 @@ contract FinancingContract is
     }
 
     struct Financing {
+        uint256 financingId;
         uint256 propertyId;
         address loaner;
         uint256 loanId;
@@ -35,6 +36,7 @@ contract FinancingContract is
     uint256 public financingCount; // total number of financings
     mapping(uint256 => Financing) public financings; // mapping of propertyId to Financing struct
     mapping(uint256 => uint256) public propertyToFinancing; // mapping of financingId to propertyId
+    mapping(address => uint256[]) public lenderToFinancing; // mapping of lender to financingIds
 
     event FinanceRequest(
         address indexed _lender,
@@ -106,7 +108,9 @@ contract FinancingContract is
         }
 
         financingCount++;
+        lenderToFinancing[loan.lender].push(financingCount);
         financings[financingCount] = Financing({
+            financingId: financingCount,
             propertyId: _propertyId,
             loaner: _loaner,
             loanId: _loanId,
@@ -150,7 +154,7 @@ contract FinancingContract is
         if (financing.status != FinancingStatus.Pending) {
             revert FinancingNotPending();
         }
-        if (loans[financing.loanId].lender == _msgSender()) {
+        if (loans[financing.loanId].lender != _msgSender()) {
             revert NotLender();
         }
 
@@ -218,5 +222,15 @@ contract FinancingContract is
         uint256 _financingId
     ) external {
         propertyToFinancing[_propertyId] = _financingId;
+    }
+
+    // Function to get all financings of a lender
+    function lenderGetFinancings() external view returns (Financing[] memory) {
+        uint256[] memory financingIds = lenderToFinancing[_msgSender()];
+        Financing[] memory _financings = new Financing[](financingIds.length);
+        for (uint256 i = 0; i < financingIds.length; i++) {
+            _financings[i] = financings[financingIds[i]];
+        }
+        return _financings;
     }
 }

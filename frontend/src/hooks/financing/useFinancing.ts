@@ -64,6 +64,7 @@ export function useGetFinancingByPropertyId(
         propertyId
       );
       return {
+        financingId: Number(currentFinancing[FinancingResultIndex.FINANCING_ID]),
         loanId: Number(currentFinancing[FinancingResultIndex.LOAN_ID]),
         propertyId: Number(currentFinancing[FinancingResultIndex.PROPERTY_ID]),
         loanAmount: Number(currentFinancing[FinancingResultIndex.LOAN_AMOUNT]),
@@ -90,6 +91,7 @@ export function useGetFinancingByFinancingId(
         financingId
       );
       return {
+        financingId: Number(currentFinancing[FinancingResultIndex.FINANCING_ID]),
         loanId: Number(currentFinancing[FinancingResultIndex.LOAN_ID]),
         propertyId: Number(currentFinancing[FinancingResultIndex.PROPERTY_ID]),
         loanAmount: Number(currentFinancing[FinancingResultIndex.LOAN_AMOUNT]),
