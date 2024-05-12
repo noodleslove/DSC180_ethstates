@@ -1,4 +1,4 @@
-import { useMutation, useQuery, UseQueryResult } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getFinancingContract } from "../../queries/dapp";
 import { Loan, LoanResult, LoanResultIndex } from "../../types/financing";
 
@@ -13,6 +13,7 @@ export function useGetLoans(address: `0x${string}` | undefined) {
       return Promise.resolve(
         loans.map((loan: LoanResult): Loan => {
           return {
+            loanId: Number(loan[LoanResultIndex.LOANID]),
             lender: loan[LoanResultIndex.LENDER],
             annualInterestRate: Number(
               loan[LoanResultIndex.ANNUAL_INTEREST_RATE]

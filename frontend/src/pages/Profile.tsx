@@ -19,12 +19,23 @@ import { useGetAllPropertiesByOwner } from "../hooks/marketplace/useProperty";
 import { Nft } from "../types/listing";
 import { CHAIN_ID } from "../types/constant";
 import { useGetAllLoansByOwner } from "../hooks/financing/useLoan";
-import { Financing, FinancingResult, FinancingStatus, Loan } from "../types/financing";
+import { Financing, Loan } from "../types/financing";
 import LoanPool from "../components/financing/LoanPool";
 import LenderPool from "../components/financing/LenderPool";
 import contractAddress from "../contracts/contract-address.json";
 import financingArtifact from "../contracts/FinancingContract.json";
 import { ethers } from "ethers";
+
+interface FinancingResult {
+  financingId: bigint;
+  propertyId: bigint;
+  loaner: string;
+  loanId: bigint;
+  status: bigint;
+  loanAmount: bigint;
+  durationInMonths: bigint;
+  paidMonths: bigint;
+}
 
 export default function Profile() {
   const [nfts, setNfts] = useState<Nft[] | undefined>([]);
@@ -32,27 +43,31 @@ export default function Profile() {
   const [financings, setFinancings] = useState<Financing[] | undefined>([]);
   const { address, chain, isConnected } = useAccount();
   const { isFetched, data } = useGetAllPropertiesByOwner(address);
-  const { isFetched: isLoansFetched, data: loansData } =
-    useGetAllLoansByOwner(address);
-  const { data: financingsData, isFetched: isFinancingsFetched } =
-    useReadContract({
-      address: contractAddress.FinancingContractProxy as `0x${string}`,
-      account: address,
-      abi: financingArtifact.abi,
-      functionName: "lenderGetFinancings",
-      args: [],
-    });
+  const {
+    isFetched: isLoansFetched,
+    data: loansData,
+    refetch: refetchLoans,
+  } = useGetAllLoansByOwner(address);
+  // const { data: financingsData, isFetched: isFinancingsFetched } =
+  const res = useReadContract({
+    address: contractAddress.FinancingContractProxy as `0x${string}`,
+    account: address,
+    abi: financingArtifact.abi,
+    functionName: "lenderGetFinancings",
+    args: [],
+  });
+
+  const financingsData: FinancingResult[] = res.data as FinancingResult[];
+  const isFinancingsFetched: boolean = res.isFetched;
 
   useEffect(() => {
     if (isConnected && isFetched) {
-      console.log("nfts");
       setNfts(data);
     }
   }, [isConnected, isFetched, data]);
 
   useEffect(() => {
     if (isConnected && isLoansFetched) {
-      console.log("loans");
       setLoans(loansData);
     }
   }, [isConnected, isLoansFetched, loansData]);
@@ -60,17 +75,20 @@ export default function Profile() {
   useEffect(() => {
     if (isConnected && isFinancingsFetched) {
       console.log(financingsData);
-      setFinancings(financingsData.map((financing) => ({
-        financingId: Number(financing.financingId),
-        propertyId: Number(financing.propertyId),
-        loaner: financing.loaner,
-        loanId: Number(financing.loanId),
-        loanAmount: parseFloat(ethers.formatEther(financing.loanAmount)),
-        status: FinancingStatus[Number(financing.status)],
-        durationInMonths: Number(financing.durationInMonths),
-        paidMonths: Number(financing.paidMonths),
-      
-      })));
+      setFinancings(
+        financingsData.map((financing: FinancingResult) => {
+          return {
+            financingId: Number(financing.financingId),
+            propertyId: Number(financing.propertyId),
+            loaner: financing.loaner,
+            loanId: Number(financing.loanId),
+            loanAmount: parseFloat(ethers.formatEther(financing.loanAmount)),
+            status: Number(financing.status),
+            durationInMonths: Number(financing.durationInMonths),
+            paidMonths: Number(financing.paidMonths),
+          };
+        })
+      );
     }
   }, [isConnected, isFinancingsFetched, financingsData]);
 
@@ -216,7 +234,7 @@ export default function Profile() {
           </Badge>
         </Heading>
 
-        <LoanPool address={address} loans={loans} />
+        <LoanPool address={address} loans={loans} refetch={refetchLoans} />
       </Container>
 
       <Container maxWidth="container.lg">

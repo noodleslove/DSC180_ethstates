@@ -20,9 +20,10 @@ import financingArtifact from "../../contracts/FinancingContract.json";
 interface Props {
   address: `0x${string}` | undefined;
   loans: Loan[];
+  refetch: () => void;
 }
 
-export default function LoanPool({ loans }: Props) {
+export default function LoanPool({ loans, refetch }: Props) {
   const toast = useToast();
   const { writeContract, status } = useWriteContract();
 
